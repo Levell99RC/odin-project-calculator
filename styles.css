@@ -15,6 +15,8 @@ body {
 .display {
     font-size: 40px;
     border: 2px solid black;
+    text-align: right;
+    height: 47px;
     width: 450px;
     padding: 10px;
     margin-bottom: 20px;
