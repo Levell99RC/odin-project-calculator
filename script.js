@@ -1,28 +1,52 @@
-let number1 = ''; 
-let number2 = '';
+let numDisplay = ''; 
+let numStored = '';
 let operator = '';
 
 const calc = document.querySelector('.calculator');
 const display = document.querySelector('.display');
 const buttons = document.querySelectorAll('button');
 
-display.textContent = ''; //Initialize display
+display.textContent = '';
 
 buttons.forEach((item) => {
     item.addEventListener('click', () => {
-        if(item.textContent >= '0' && item.textContent <= '9') {
-            number1 += item.textContent;
-            display.textContent = number1;
-        } else if (item.textContent === 'C') {
+        let char = item.textContent;
+        if(char >= '0' && char <= '9') {
+            if (numDisplay !== '' || char !== '0') {
+                numDisplay += char;
+                display.textContent = numDisplay;
+            }
+        } else if (char === 'C') {
             display.textContent = '';
-            number1 = '';
-            number2 = '';
+            numDisplay = '';
+            numStored = '';
             operator = '';
-        } else if (item.textContent === '=') {
-            
+        } else if (char === '=') {
+            let justPressedOp = display.textContent[display.textContent.length - 1] === '+' ||
+                display.textContent[display.textContent.length - 1] === '-' ||
+                display.textContent[display.textContent.length - 1] === '*' ||
+                display.textContent[display.textContent.length - 1] === '/';
+            if(operator !== '' && !justPressedOp) {
+                display.textContent = operate(operator, parseInt(numStored), parseInt(display.textContent));
+                operator = '';
+                numDisplay = '';
+                numStored = '';
+            }
         } else { 
             //Else is any regular operator
-
+            if(numStored === '') {
+                //If this is the first operand
+                operator = char;
+                numStored = display.textContent;
+                numDisplay = '';
+                display.textContent += char;
+            } else {
+                //If this isn't the first operand, as in chaining operations
+                numStored = operate(operator, parseInt(numStored), parseInt(display.textContent));
+                operator = char;
+                numDisplay = '';
+                display.textContent = numStored + char;
+            }
         }
     });
 })
